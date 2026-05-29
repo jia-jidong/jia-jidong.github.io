@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jia-jidong.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Bellhop 水声传播建模工具的完整安装、配置与实战指南，涵盖编译、.env 格式、arlpy Python 封装、信道冲激响应生成与常见陷阱。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bellhop 水声射线追踪工具：从零到实战">
+<meta property="og:url" content="https://jia-jidong.github.io/2026/05/29/Bellhop-%E6%B0%B4%E5%A3%B0%E5%B0%84%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%B7%A5%E5%85%B7-%E4%BB%8E%E9%9B%B6%E5%88%B0%E5%AE%9E%E6%88%98/index.html">
+<meta property="og:site_name" content="贾哥的技术博客">
+<meta property="og:description" content="Bellhop 水声传播建模工具的完整安装、配置与实战指南，涵盖编译、.env 格式、arlpy Python 封装、信道冲激响应生成与常见陷阱。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-29T03:16:33.000Z">
+<meta property="article:modified_time" content="2026-05-29T03:17:43.608Z">
+<meta property="article:author" content="贾哥">
+<meta property="article:tag" content="Bellhop">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="信道建模">
+<meta property="article:tag" content="声学">
+<meta property="article:tag" content="水声">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://jia-jidong.github.io/2026/05/29/Bellhop-%E6%B0%B4%E5%A3%B0%E5%B0%84%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%B7%A5%E5%85%B7-%E4%BB%8E%E9%9B%B6%E5%88%B0%E5%AE%9E%E6%88%98/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jia-jidong.github.io/2026/05/29/Bellhop-%E6%B0%B4%E5%A3%B0%E5%B0%84%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%B7%A5%E5%85%B7-%E4%BB%8E%E9%9B%B6%E5%88%B0%E5%AE%9E%E6%88%98/","path":"2026/05/29/Bellhop-水声射线追踪工具-从零到实战/","title":"Bellhop 水声射线追踪工具：从零到实战"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Bellhop 水声射线追踪工具：从零到实战 | 贾哥的技术博客</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">贾哥的技术博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Bellhop-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">1. Bellhop 是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">2. 环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%BC%96%E8%AF%91%E5%99%A8"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 编译器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Python-%E7%8E%AF%E5%A2%83"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Python 环境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E7%BC%96%E8%AF%91"><span class="nav-number">3.</span> <span class="nav-text">3. 下载与编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E8%8E%B7%E5%8F%96%E6%BA%90%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 获取源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E7%BC%96%E8%AF%91"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%AE%89%E8%A3%85"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-env-%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%EF%BC%88%E5%85%B3%E9%94%AE%EF%BC%81%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">4. .env 文件格式（关键！）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%AD%A3%E7%A1%AE%E6%A0%BC%E5%BC%8F%EF%BC%88%E4%BB%A5-Munk-%E6%B7%B1%E6%B5%B7%E5%89%96%E9%9D%A2%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 正确格式（以 Munk 深海剖面为例）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%B8%B8%E8%A7%81%E6%A0%BC%E5%BC%8F%E9%94%99%E8%AF%AF"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 常见格式错误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-arlpy-Python-%E5%B0%81%E8%A3%85"><span class="nav-number">5.</span> <span class="nav-text">5. arlpy Python 封装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 快速入门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-API-%E9%80%9F%E6%9F%A5"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 API 速查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E6%A3%80%E6%9F%A5-Bellhop-%E6%98%AF%E5%90%A6%E5%8F%AF%E7%94%A8"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 检查 Bellhop 是否可用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-arr-%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E8%A7%A3%E6%9E%90"><span class="nav-number">6.</span> <span class="nav-text">6. .arr 文件格式与解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E6%A0%87%E5%87%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 标准格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E4%B8%8E%E6%97%A7%E7%89%88%E6%A0%BC%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 与旧版格式的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E8%A7%A3%E6%9E%90%E4%BB%A3%E7%A0%81"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 解析代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">7. 可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E5%A3%B0%E7%BA%BF%E8%BD%A8%E8%BF%B9%E5%9B%BE"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 声线轨迹图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E5%A3%B0%E4%BC%A0%E6%92%AD%E6%8D%9F%E5%A4%B1%E5%9B%BE"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 声传播损失图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E5%AE%9E%E6%88%98%E7%BB%8F%E9%AA%8C%E4%B8%8E%E9%99%B7%E9%98%B1"><span class="nav-number">8.</span> <span class="nav-text">8. 实战经验与陷阱</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-%E7%BD%91%E7%BB%9C%E4%B8%8B%E8%BD%BD"><span class="nav-number">8.1.</span> <span class="nav-text">8.1 网络下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-env-%E6%A0%BC%E5%BC%8F"><span class="nav-number">8.2.</span> <span class="nav-text">8.2 .env 格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-%E5%8A%9F%E7%8E%87%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">8.3.</span> <span class="nav-text">8.3 功率归一化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-%E7%9B%B8%E5%AF%B9%E6%97%B6%E5%BB%B6"><span class="nav-number">8.4.</span> <span class="nav-text">8.4 相对时延</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-5-%E5%A4%9A%E5%BE%84%E6%95%B0%E9%87%8F%E9%80%89%E6%8B%A9"><span class="nav-number">8.5.</span> <span class="nav-text">8.5 多径数量选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-6-%E6%80%A7%E8%83%BD%E8%80%83%E8%99%91"><span class="nav-number">8.6.</span> <span class="nav-text">8.6 性能考虑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B%EF%BC%9A%E6%B7%B1%E6%B5%B7%E5%A4%9A%E5%BE%84%E4%BF%A1%E9%81%93%E7%94%9F%E6%88%90"><span class="nav-number">9.</span> <span class="nav-text">9. 完整示例：深海多径信道生成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E6%80%BB%E7%BB%93"><span class="nav-number">10.</span> <span class="nav-text">10. 总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">贾哥</p>
+  <div class="site-description" itemprop="description">技术分享与记录</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jia-jidong.github.io/2026/05/29/Bellhop-%E6%B0%B4%E5%A3%B0%E5%B0%84%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%B7%A5%E5%85%B7-%E4%BB%8E%E9%9B%B6%E5%88%B0%E5%AE%9E%E6%88%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="贾哥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="贾哥的技术博客">
+      <meta itemprop="description" content="技术分享与记录">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Bellhop 水声射线追踪工具：从零到实战 | 贾哥的技术博客">
+      <meta itemprop="description" content="Bellhop 水声传播建模工具的完整安装、配置与实战指南，涵盖编译、.env 格式、arlpy Python 封装、信道冲激响应生成与常见陷阱。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Bellhop 水声射线追踪工具：从零到实战
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-05-29 11:16:33 / 修改时间：11:17:43" itemprop="dateCreated datePublished" datetime="2026-05-29T11:16:33+08:00">2026-05-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%B0%B4%E5%A3%B0%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">水声信号处理</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">Bellhop 水声传播建模工具的完整安装、配置与实战指南，涵盖编译、.env 格式、arlpy Python 封装、信道冲激响应生成与常见陷阱。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>2026-05-29 | 水声探通一体化项目实战笔记</p>
+</blockquote>
+<h2 id="1-Bellhop-是什么？"><a href="#1-Bellhop-是什么？" class="headerlink" title="1. Bellhop 是什么？"></a>1. Bellhop 是什么？</h2><p>Bellhop 是 Acoustics Toolbox 中的水声传播建模工具，采用<strong>高斯波束追踪法</strong>在 2D 垂直剖面（距离-深度）上计算水下声传播。它是水声学领域最广泛使用的射线追踪工具之一，由 Michael B. Porter 开发，适用于频率 &gt;100Hz 的深海和浅海场景。</p>
+<p><strong>核心能力</strong>：</p>
+<ul>
+<li>声线轨迹计算 (<code>compute_rays</code>) — 可视化声传播路径</li>
+<li>到达时间与复幅度 (<code>compute_arrivals</code>) — 信道冲激响应建模</li>
+<li>传播损失 (<code>compute_transmission_loss</code>) — 声场能量分布</li>
+<li>本征声线 (<code>compute_eigenrays</code>) — 连接特定收发对的声线</li>
+</ul>
+<p><strong>适用场景</strong>：深海远程声传播、声纳性能评估、水声通信信道建模、探通一体化链路仿真。</p>
+<h2 id="2-环境准备"><a href="#2-环境准备" class="headerlink" title="2. 环境准备"></a>2. 环境准备</h2><h3 id="2-1-编译器"><a href="#2-1-编译器" class="headerlink" title="2.1 编译器"></a>2.1 编译器</h3><p>Bellhop 是 Fortran 程序，需要 gfortran 编译器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Ubuntu/Debian</span></span><br><span class="line"><span class="built_in">sudo</span> apt install gfortran</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证</span></span><br><span class="line">gfortran --version  <span class="comment"># GNU Fortran 11.4.0</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Python-环境"><a href="#2-2-Python-环境" class="headerlink" title="2.2 Python 环境"></a>2.2 Python 环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install arlpy numpy scipy matplotlib</span><br><span class="line"><span class="comment"># arlpy 是 Bellhop 的 Python 前端，版本 1.9.1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-下载与编译"><a href="#3-下载与编译" class="headerlink" title="3. 下载与编译"></a>3. 下载与编译</h2><h3 id="3-1-获取源码"><a href="#3-1-获取源码" class="headerlink" title="3.1 获取源码"></a>3.1 获取源码</h3><p>官方源 <code>oalib.hlsresearch.com</code> 在国内网络环境下下载不稳定（超时、断开）。推荐使用 GitHub 镜像 <a target="_blank" rel="noopener" href="https://github.com/A-New-BellHope/bellhop">A-New-BellHope&#x2F;bellhop</a>，这是 Scripps 海洋研究所维护的修复版，修复了原版多个数值 bug。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/A-New-BellHope/bellhop/archive/refs/heads/main.zip</span><br><span class="line">unzip main.zip &amp;&amp; <span class="built_in">cd</span> bellhop-main</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>教训</strong>：不要从 <code>oalib.hlsresearch.com</code> 直接下载（国内超时严重），GitHub 镜像更稳定。</p>
+</blockquote>
+<h3 id="3-2-编译"><a href="#3-2-编译" class="headerlink" title="3.2 编译"></a>3.2 编译</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> bellhop-main</span><br><span class="line">make all    <span class="comment"># 编译 Bellhop + 依赖库</span></span><br><span class="line"><span class="comment"># 输出: ***** BELLHOP built *****</span></span><br></pre></td></tr></table></figure>
+
+<p>Makefile 已预设 gfortran 编译选项（<code>-O2 -ffast-math -march=native</code>），一般无需修改。编译产物在 <code>Bellhop/bellhop.exe</code>（约 27MB）。</p>
+<h3 id="3-3-安装"><a href="#3-3-安装" class="headerlink" title="3.3 安装"></a>3.3 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p ~/at/bin</span><br><span class="line"><span class="built_in">cp</span> Bellhop/bellhop.exe ~/at/bin/bellhop</span><br><span class="line"><span class="built_in">chmod</span> +x ~/at/bin/bellhop</span><br><span class="line"></span><br><span class="line"><span class="comment"># arlpy 需要 bellhop.exe 在 PATH 中</span></span><br><span class="line"><span class="built_in">ln</span> -sf ~/at/bin/bellhop /usr/local/bin/bellhop.exe</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-env-文件格式（关键！）"><a href="#4-env-文件格式（关键！）" class="headerlink" title="4. .env 文件格式（关键！）"></a>4. .env 文件格式（关键！）</h2><p>Bellhop 的输入是 <code>.env</code> 环境文件。<strong>格式极其严格，错一个字段就静默失败。</strong></p>
+<h3 id="4-1-正确格式（以-Munk-深海剖面为例）"><a href="#4-1-正确格式（以-Munk-深海剖面为例）" class="headerlink" title="4.1 正确格式（以 Munk 深海剖面为例）"></a>4.1 正确格式（以 Munk 深海剖面为例）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#x27;Munk Deep Sea ISAC&#x27;        ! 标题</span><br><span class="line">6000.0                      ! 频率 [Hz]</span><br><span class="line">1                           ! NMEDIA（介质数，水=1）</span><br><span class="line">&#x27;SVW&#x27;                       ! SSP 选项（S=样条插值, V=真空海面, W=衰减单位 dB/波长）</span><br><span class="line">26  0.0  5000.0             ! SSP 点数, z_min, z_max</span><br><span class="line">    0.0  1548.52  /         ! z [m], c [m/s] (声速剖面)</span><br><span class="line">  200.0  1530.29  /</span><br><span class="line">  ...</span><br><span class="line"> 5000.0  1551.91  /</span><br><span class="line">&#x27;A&#x27; 0.0                     ! 海底选项（A=声弹性半空间）, 衰减单位</span><br><span class="line"> 5000.0  1600.00  0.0  1.8  0.8  /  ! 海底深度, cp, cs, ρ, αp, αs</span><br><span class="line">1                           ! NSD（源深度数）</span><br><span class="line">1000.0 /                    ! SD(1) 源深度 [m]</span><br><span class="line">1                           ! NRD（接收深度数）</span><br><span class="line">1000.0 /                    ! RD(1) 接收深度 [m]</span><br><span class="line">1                           ! NR（距离数）</span><br><span class="line">5.00 /                      ! R(1) 距离 [km]</span><br><span class="line">&#x27;A&#x27;                         ! 运行模式（A=Arrivals, R=Rays, C=Coherent TL, I=Incoherent TL）</span><br><span class="line">1000                        ! NBEAMS（波束数）</span><br><span class="line">-80.0 80.0 /                ! 发射角度范围 [deg]</span><br><span class="line">0.0  5500.0  101.0          ! STEP [m], ZBOX [m], RBOX [km]</span><br><span class="line">&#x27;output_name&#x27;               ! 输出文件名前缀</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-常见格式错误"><a href="#4-2-常见格式错误" class="headerlink" title="4.2 常见格式错误"></a>4.2 常见格式错误</h3><table>
+<thead>
+<tr>
+<th>错误</th>
+<th>后果</th>
+<th>正确做法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>频率行格式不对</td>
+<td>Bellhop 静默退出，无 .arr 输出</td>
+<td>频率独占一行</td>
+</tr>
+<tr>
+<td>SSP 选项用 <code>&#39;QVF&#39;</code></td>
+<td>不支持，报 Fatal Error</td>
+<td>使用 <code>&#39;SVW&#39;</code> 或 <code>&#39;CVW&#39;</code></td>
+</tr>
+<tr>
+<td>忘记 <code>/</code> 终止符</td>
+<td>数据行被错误解析</td>
+<td>每行数据后加 <code>/</code></td>
+</tr>
+<tr>
+<td>距离单位用 m 而不是 km</td>
+<td>TL 结果完全错误</td>
+<td><strong>距离单位始终是 km</strong></td>
+</tr>
+<tr>
+<td>运行模式用 <code>&#39;R&#39;</code> 但参数是 Arrivals 格式</td>
+<td>输出格式混乱</td>
+<td>模式字母与期望输出一致</td>
+</tr>
+<tr>
+<td>海底参数格式错误</td>
+<td>射线追踪不收敛</td>
+<td><code>深度 cp cs ρ αp αs /</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>调试技巧</strong>：运行后检查 <code>.prt</code> 文件（打印输出），其中包含详细的参数回显和错误信息。</p>
+</blockquote>
+<h2 id="5-arlpy-Python-封装"><a href="#5-arlpy-Python-封装" class="headerlink" title="5. arlpy Python 封装"></a>5. arlpy Python 封装</h2><h3 id="5-1-快速入门"><a href="#5-1-快速入门" class="headerlink" title="5.1 快速入门"></a>5.1 快速入门</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> arlpy.uwapm <span class="keyword">as</span> pm</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建 2D 环境</span></span><br><span class="line">env = pm.create_env2d(</span><br><span class="line">    depth=<span class="number">5000.0</span>,           <span class="comment"># 水深 [m]</span></span><br><span class="line">    frequency=<span class="number">6000.0</span>,       <span class="comment"># 频率 [Hz]</span></span><br><span class="line">    soundspeed=[            <span class="comment"># Munk 声速剖面</span></span><br><span class="line">        (<span class="number">0.0</span>, <span class="number">1548.52</span>), (<span class="number">200.0</span>, <span class="number">1530.29</span>), ...,</span><br><span class="line">        (<span class="number">5000.0</span>, <span class="number">1551.91</span>)</span><br><span class="line">    ],</span><br><span class="line">    soundspeed_interp=<span class="string">&#x27;spline&#x27;</span>,</span><br><span class="line">    bottom_soundspeed=<span class="number">1600.0</span>,</span><br><span class="line">    bottom_density=<span class="number">1.8</span>,</span><br><span class="line">    bottom_absorption=<span class="number">0.8</span>,</span><br><span class="line">    tx_depth=<span class="number">1000.0</span>,        <span class="comment"># 发射深度 [m]</span></span><br><span class="line">    rx_depth=<span class="number">1000.0</span>,        <span class="comment"># 接收深度 [m]</span></span><br><span class="line">    rx_range=<span class="number">20000.0</span>,       <span class="comment"># 最大距离 [m]</span></span><br><span class="line">    nbeams=<span class="number">1000</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算到达时间与复幅度</span></span><br><span class="line">arrivals = pm.compute_arrivals(env)</span><br><span class="line"><span class="comment"># → DataFrame: time_of_arrival, arrival_amplitude, surface_bounces, bottom_bounces</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算声线轨迹</span></span><br><span class="line">rays = pm.compute_rays(env)</span><br><span class="line"><span class="comment"># → DataFrame: ray (N×2 坐标数组), bottom_bounces</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算传播损失 (非相干)</span></span><br><span class="line">env_tl = pm.create_env2d(..., rx_depth=<span class="built_in">range</span>(<span class="number">0</span>,<span class="number">5001</span>,<span class="number">50</span>), rx_range=<span class="built_in">range</span>(<span class="number">0</span>,<span class="number">20001</span>,<span class="number">200</span>))</span><br><span class="line">tloss = pm.compute_transmission_loss(env_tl, mode=pm.incoherent)</span><br><span class="line"><span class="comment"># → DataFrame: 深度 × 距离的复声压</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-API-速查"><a href="#5-2-API-速查" class="headerlink" title="5.2 API 速查"></a>5.2 API 速查</h3><table>
+<thead>
+<tr>
+<th>函数</th>
+<th>输入</th>
+<th>输出</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>create_env2d()</code></td>
+<td>物理参数 dict</td>
+<td>env dict</td>
+<td>构建环境定义</td>
+</tr>
+<tr>
+<td><code>compute_arrivals(env)</code></td>
+<td>env</td>
+<td>DataFrame (arrivals)</td>
+<td>信道冲激响应</td>
+</tr>
+<tr>
+<td><code>compute_rays(env)</code></td>
+<td>env</td>
+<td>DataFrame (rays)</td>
+<td>声线可视化</td>
+</tr>
+<tr>
+<td><code>compute_transmission_loss(env, mode)</code></td>
+<td>env + 模式</td>
+<td>DataFrame (TL)</td>
+<td>声场渲染</td>
+</tr>
+<tr>
+<td><code>compute_eigenrays(env)</code></td>
+<td>env</td>
+<td>DataFrame (rays)</td>
+<td>连接特定收发对的声线</td>
+</tr>
+<tr>
+<td><code>arrivals_to_impulse_response(arrivals, fs)</code></td>
+<td>arrivals + fs</td>
+<td>ndarray</td>
+<td>时域冲激响应</td>
+</tr>
+<tr>
+<td><code>plot_rays(rays, env)</code></td>
+<td>rays + env</td>
+<td>Bokeh 图</td>
+<td>声线可视化</td>
+</tr>
+<tr>
+<td><code>plot_transmission_loss(tloss, env)</code></td>
+<td>tloss + env</td>
+<td>Bokeh 图</td>
+<td>TL 可视化</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-检查-Bellhop-是否可用"><a href="#5-3-检查-Bellhop-是否可用" class="headerlink" title="5.3 检查 Bellhop 是否可用"></a>5.3 检查 Bellhop 是否可用</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 确保 bellhop.exe 在 PATH 中</span></span><br><span class="line"><span class="built_in">which</span> bellhop.exe</span><br><span class="line"><span class="comment"># 输出: /usr/local/bin/bellhop.exe</span></span><br><span class="line"></span><br><span class="line">python3 -c <span class="string">&quot;import arlpy.uwapm as pm; print(pm.models())&quot;</span></span><br><span class="line"><span class="comment"># 输出: [&#x27;bellhop&#x27;]</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>教训</strong>：<code>pm.models()</code> 返回空列表通常是因为 <code>bellhop.exe</code> 不在 PATH。arlpy 调用 <code>subprocess.run(&#39;bellhop.exe&#39;)</code>，不检查自定义路径。</p>
+</blockquote>
+<h2 id="6-arr-文件格式与解析"><a href="#6-arr-文件格式与解析" class="headerlink" title="6. .arr 文件格式与解析"></a>6. .arr 文件格式与解析</h2><h3 id="6-1-标准格式"><a href="#6-1-标准格式" class="headerlink" title="6.1 标准格式"></a>6.1 标准格式</h3><p>Bellhop .arr 文件（Arrivals 模式输出）格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x27;2D&#x27;                                    # 维度</span><br><span class="line">   6000.0000000000000                    # 频率 [Hz]</span><br><span class="line">           1   1000.00000                # NSD, SD(1)</span><br><span class="line">           1   1000.00000                # NRD, RD(1)</span><br><span class="line">           1   5000.00000                # NR, R(1)</span><br><span class="line">          20                            # 到达数</span><br><span class="line">          20                            # （重复计数）</span><br><span class="line">   A_delay  phase(deg)  delay(ms)  SrcAng  RcvAng  NumSurf  NumBot</span><br></pre></td></tr></table></figure>
+
+<p>每条到达线：<strong>A(延迟) → 相位[deg] → 延迟[ms] → 源角度 → 接收角度 → 海面反射次数 → 海底反射次数</strong></p>
+<h3 id="6-2-与旧版格式的区别"><a href="#6-2-与旧版格式的区别" class="headerlink" title="6.2 与旧版格式的区别"></a>6.2 与旧版格式的区别</h3><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>第1列</th>
+<th>第2列</th>
+<th>第3列</th>
+<th>其余</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>新版</strong> (A-New-BellHope)</td>
+<td>复压力幅度</td>
+<td>相位 [deg]</td>
+<td>延迟 [ms]</td>
+<td>角度+反射计数</td>
+</tr>
+<tr>
+<td><strong>旧版</strong> (原版 Acoustics Toolbox)</td>
+<td>延迟 [s]</td>
+<td>实部</td>
+<td>虚部</td>
+<td>角度+反射计数</td>
+</tr>
+</tbody></table>
+<p><strong>复压力 &#x3D; A × exp(j × phase × π&#x2F;180)</strong></p>
+<h3 id="6-3-解析代码"><a href="#6-3-解析代码" class="headerlink" title="6.3 解析代码"></a>6.3 解析代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parse_arrivals</span>(<span class="params">arr_file</span>):</span><br><span class="line">    taps = []</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(arr_file) <span class="keyword">as</span> f:</span><br><span class="line">        lines = f.readlines()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 跳过头部 (前 5 行)</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> lines[<span class="number">6</span>:]:</span><br><span class="line">        parts = line.strip().split()</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(parts) &gt;= <span class="number">3</span>:</span><br><span class="line">            amp_mag = <span class="built_in">float</span>(parts[<span class="number">0</span>])</span><br><span class="line">            phase_deg = <span class="built_in">float</span>(parts[<span class="number">1</span>])</span><br><span class="line">            delay_ms = <span class="built_in">float</span>(parts[<span class="number">2</span>])</span><br><span class="line">            amp_complex = amp_mag * <span class="built_in">complex</span>(</span><br><span class="line">                math.cos(phase_deg * math.pi / <span class="number">180</span>),</span><br><span class="line">                math.sin(phase_deg * math.pi / <span class="number">180</span>)</span><br><span class="line">            )</span><br><span class="line">            taps.append((delay_ms / <span class="number">1000.0</span>, amp_complex))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> taps</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-可视化"><a href="#7-可视化" class="headerlink" title="7. 可视化"></a>7. 可视化</h2><h3 id="7-1-声线轨迹图"><a href="#7-1-声线轨迹图" class="headerlink" title="7.1 声线轨迹图"></a>7.1 声线轨迹图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">rays = pm.compute_rays(env)</span><br><span class="line"></span><br><span class="line">fig, ax = plt.subplots(figsize=(<span class="number">20</span>, <span class="number">6</span>))</span><br><span class="line"><span class="keyword">for</span> _, row <span class="keyword">in</span> rays.iterrows():</span><br><span class="line">    r_km = row.ray[:, <span class="number">0</span>] / <span class="number">1000.0</span></span><br><span class="line">    d = row.ray[:, <span class="number">1</span>]</span><br><span class="line">    ax.plot(r_km, d, color=<span class="string">&#x27;gray&#x27;</span>, alpha=<span class="number">0.2</span>, linewidth=<span class="number">0.3</span>)</span><br><span class="line"></span><br><span class="line">ax.set_ylim(<span class="number">5200</span>, -<span class="number">200</span>)</span><br><span class="line">ax.set_xlim(<span class="number">0</span>, <span class="number">100</span>)</span><br><span class="line">ax.set_xlabel(<span class="string">&#x27;Range (km)&#x27;</span>)</span><br><span class="line">ax.set_ylabel(<span class="string">&#x27;Depth (m)&#x27;</span>)</span><br><span class="line">plt.savefig(<span class="string">&#x27;rays.png&#x27;</span>, dpi=<span class="number">250</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-声传播损失图"><a href="#7-2-声传播损失图" class="headerlink" title="7.2 声传播损失图"></a>7.2 声传播损失图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tloss = pm.compute_transmission_loss(env_tl, mode=pm.incoherent)</span><br><span class="line">tl_db = <span class="number">20</span> * np.log10(np.<span class="built_in">abs</span>(tloss.values) + <span class="number">1e-10</span>)</span><br><span class="line"></span><br><span class="line">plt.pcolormesh(ranges_km, depths, tl_db,</span><br><span class="line">               shading=<span class="string">&#x27;gouraud&#x27;</span>, cmap=<span class="string">&#x27;jet&#x27;</span>,</span><br><span class="line">               vmin=-<span class="number">120</span>, vmax=<span class="number">0</span>)</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;Transmission Loss (dB)&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong>：Bokeh PNG 导出需要 selenium + 浏览器驱动，在无头服务器上用 matplotlib 更简单。</p>
+</blockquote>
+<h2 id="8-实战经验与陷阱"><a href="#8-实战经验与陷阱" class="headerlink" title="8. 实战经验与陷阱"></a>8. 实战经验与陷阱</h2><h3 id="8-1-网络下载"><a href="#8-1-网络下载" class="headerlink" title="8.1 网络下载"></a>8.1 网络下载</h3><ul>
+<li>❌ <code>oalib.hlsresearch.com</code> 直连不稳定 → ✅ GitHub 镜像 <code>A-New-BellHope/bellhop</code></li>
+</ul>
+<h3 id="8-2-env-格式"><a href="#8-2-env-格式" class="headerlink" title="8.2 .env 格式"></a>8.2 .env 格式</h3><ul>
+<li>Bellhop 对格式极度敏感，<strong>错一个字段就静默失败</strong>（exit code 0，不报错，不生成有效输出）</li>
+<li>务必检查 <code>.prt</code> 文件确认参数被正确解析</li>
+<li>距离单位是 <strong>km</strong>，不是 m</li>
+</ul>
+<h3 id="8-3-功率归一化"><a href="#8-3-功率归一化" class="headerlink" title="8.3 功率归一化"></a>8.3 功率归一化</h3><p>从信道抽头生成接收信号时，多径幅度需要功率归一化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y_multipath = <span class="built_in">sum</span>(amp_i * s(t - tau_i) <span class="keyword">for</span> each tap)</span><br><span class="line">y_multipath /= np.sqrt(np.mean(np.<span class="built_in">abs</span>(y_multipath)**<span class="number">2</span>))  <span class="comment"># 归一化到单位功率</span></span><br><span class="line">y = y_multipath + noise</span><br></pre></td></tr></table></figure>
+
+<p>不归一化的话，深海传播损失（~1e-4 到 1e-8 量级）会把信号压到量化噪声以下。</p>
+<h3 id="8-4-相对时延"><a href="#8-4-相对时延" class="headerlink" title="8.4 相对时延"></a>8.4 相对时延</h3><p>Bellhop 输出的绝对时延可能远超信号长度（5km 双程回波 &gt; 6 秒）。在信道建模时需要用<strong>相对时延</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tau0 = taps[<span class="number">0</span>][<span class="number">0</span>]  <span class="comment"># 首达时延</span></span><br><span class="line">path_params = [(tau - tau0, amp, eta) <span class="keyword">for</span> tau, amp, eta <span class="keyword">in</span> taps]</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-5-多径数量选择"><a href="#8-5-多径数量选择" class="headerlink" title="8.5 多径数量选择"></a>8.5 多径数量选择</h3><p>Bellhop 可能返回几十条到达路径。用于链路级仿真时：</p>
+<ul>
+<li><strong>太少</strong>（&lt;4 条）：丢失重要多径分量，BER 过于乐观</li>
+<li><strong>太多</strong>（&gt;16 条）：弱路径引入 ISI，BER 反而恶化</li>
+<li><strong>推荐</strong>：保留 4-8 条最强路径，按 |amplitude| 降序选取</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">taps.sort(key=<span class="keyword">lambda</span> x: -<span class="built_in">abs</span>(x[<span class="number">1</span>]))</span><br><span class="line">taps = taps[:<span class="number">6</span>]  <span class="comment"># 保留前 6 强</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-6-性能考虑"><a href="#8-6-性能考虑" class="headerlink" title="8.6 性能考虑"></a>8.6 性能考虑</h3><ul>
+<li><code>compute_rays(env, nbeams=800)</code>：~0.3s</li>
+<li><code>compute_arrivals(env)</code>：~0.05s</li>
+<li><code>compute_transmission_loss(env, 501×1001 grid)</code>：~30-60s（取决于距离和波束数）</li>
+<li>同一 env 参数下信道抽头可缓存复用，避免重复调用 Bellhop</li>
+</ul>
+<h2 id="9-完整示例：深海多径信道生成"><a href="#9-完整示例：深海多径信道生成" class="headerlink" title="9. 完整示例：深海多径信道生成"></a>9. 完整示例：深海多径信道生成</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> arlpy.uwapm <span class="keyword">as</span> pm</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.interpolate <span class="keyword">import</span> CubicSpline</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">munk_ssp</span>(<span class="params">z</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Munk 声速剖面&quot;&quot;&quot;</span></span><br><span class="line">    c0, za, B, eps = <span class="number">1500.0</span>, <span class="number">1300.0</span>, <span class="number">1300.0</span>, <span class="number">0.00737</span></span><br><span class="line">    eta = <span class="number">2</span> * (z - za) / B</span><br><span class="line">    <span class="keyword">return</span> c0 * (<span class="number">1</span> + eps * (np.exp(-eta) - <span class="number">1</span> + eta))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bellhop_channel</span>(<span class="params">source_depth, receiver_depth, range_m, frequency</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;生成 Bellhop 信道抽头&quot;&quot;&quot;</span></span><br><span class="line">    z_ssp = np.arange(<span class="number">0</span>, <span class="number">5000.1</span>, <span class="number">100.0</span>)</span><br><span class="line">    cp = np.array([munk_ssp(z) <span class="keyword">for</span> z <span class="keyword">in</span> z_ssp])</span><br><span class="line">    </span><br><span class="line">    env = pm.create_env2d(</span><br><span class="line">        depth=<span class="number">5000.0</span>, frequency=frequency,</span><br><span class="line">        soundspeed=<span class="built_in">list</span>(<span class="built_in">zip</span>(z_ssp, cp)),</span><br><span class="line">        soundspeed_interp=<span class="string">&#x27;spline&#x27;</span>,</span><br><span class="line">        bottom_soundspeed=<span class="number">1600.0</span>, bottom_density=<span class="number">1.8</span>, bottom_absorption=<span class="number">0.8</span>,</span><br><span class="line">        tx_depth=source_depth, rx_depth=receiver_depth, rx_range=range_m,</span><br><span class="line">        nbeams=<span class="number">1000</span>,</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    arrivals = pm.compute_arrivals(env)</span><br><span class="line">    taps = []</span><br><span class="line">    <span class="keyword">for</span> _, row <span class="keyword">in</span> arrivals.iterrows():</span><br><span class="line">        tau = <span class="built_in">float</span>(row[<span class="string">&#x27;time_of_arrival&#x27;</span>])</span><br><span class="line">        amp = row[<span class="string">&#x27;arrival_amplitude&#x27;</span>]</span><br><span class="line">        taps.append((tau, <span class="built_in">complex</span>(amp.real, amp.imag)))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 保留最强 6 条路径，相对时延</span></span><br><span class="line">    taps.sort(key=<span class="keyword">lambda</span> x: -<span class="built_in">abs</span>(x[<span class="number">1</span>]))</span><br><span class="line">    taps = taps[:<span class="number">6</span>]</span><br><span class="line">    taps.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>])</span><br><span class="line">    tau0 = taps[<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> [(t[<span class="number">0</span>] - tau0, t[<span class="number">1</span>]) <span class="keyword">for</span> t <span class="keyword">in</span> taps]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用</span></span><br><span class="line">taps = bellhop_channel(source_depth=<span class="number">1000</span>, receiver_depth=<span class="number">200</span>, </span><br><span class="line">                        range_m=<span class="number">5000</span>, frequency=<span class="number">6000</span>)</span><br><span class="line"><span class="keyword">for</span> tau, amp <span class="keyword">in</span> taps:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;  τ=<span class="subst">&#123;tau*<span class="number">1e3</span>:<span class="number">.2</span>f&#125;</span>ms, |A|=<span class="subst">&#123;<span class="built_in">abs</span>(amp):<span class="number">.2</span>e&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="10-总结"><a href="#10-总结" class="headerlink" title="10. 总结"></a>10. 总结</h2><table>
+<thead>
+<tr>
+<th>环节</th>
+<th>要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>获取</strong></td>
+<td>GitHub <code>A-New-BellHope/bellhop</code>（不要用官方 FTP）</td>
+</tr>
+<tr>
+<td><strong>编译</strong></td>
+<td><code>gfortran</code> + <code>make all</code>，产物 27MB</td>
+</tr>
+<tr>
+<td><strong>安装</strong></td>
+<td>复制到 <code>~/at/bin/bellhop</code>，<code>ln -s</code> 到 PATH 中的 <code>bellhop.exe</code></td>
+</tr>
+<tr>
+<td><strong>Python</strong></td>
+<td><code>pip install arlpy</code>，通过 <code>pm.compute_*()</code> 调用</td>
+</tr>
+<tr>
+<td><strong>关键陷阱</strong></td>
+<td>.env 格式严格、距离单位 km、复数幅度 vs 幅度+相位、功率归一化、相对时延</td>
+</tr>
+<tr>
+<td><strong>最佳实践</strong></td>
+<td>缓存信道抽头、限制 4-8 条最强路径、检查 .prt 文件、用 matplotlib 不用 Bokeh</td>
+</tr>
+</tbody></table>
+<p>Bellhop 是水声信道建模仿真的基础工具，掌握其安装配置是后续所有水声项目（探通一体化、DOA 估计、声纳性能评估）的前提。建议在项目启动阶段就完成 Bellhop 环境搭建和验证。</p>
+<hr>
+<p><em>本文基于 DSSS-MSK 探通一体化项目的实战经验。环境：WSL2 + Ubuntu 22.04 + gfortran 11.4.0 + Python 3.10 + arlpy 1.9.1。</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Bellhop/" rel="tag"># Bellhop</a>
+              <a href="/tags/%E6%B0%B4%E5%A3%B0/" rel="tag"># 水声</a>
+              <a href="/tags/%E4%BF%A1%E9%81%93%E5%BB%BA%E6%A8%A1/" rel="tag"># 信道建模</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/%E5%A3%B0%E5%AD%A6/" rel="tag"># 声学</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">贾哥</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
